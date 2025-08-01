@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tilt Runner - Test</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #0a0a0a 100%);
+            color: white;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 50;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            color: #00BFFF;
+            text-shadow: 0 0 20px #00BFFF, 0 0 40px #00BFFF;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px #00BFFF, 0 0 30px #00BFFF, 0 0 40px #00BFFF;
+            }
+            to {
+                text-shadow: 0 0 30px #00BFFF, 0 0 40px #00BFFF, 0 0 50px #00BFFF, 0 0 60px #00BFFF;
+            }
+        }
+        
+        button {
+            padding: 1rem 2rem;
+            background: #8A2BE2;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            box-shadow: 0 0 20px #8A2BE2;
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px #8A2BE2;
+        }
+        
+        p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #00FFFF;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Pantalla de Inicio -->
+    <div id="startScreen" class="screen">
+        <h1>TILT RUNNER</h1>
+        <p>Inclina tu celular para mover la bolita</p>
+        <button id="startButton">COMENZAR JUEGO</button>
+    </div>
+    
+    <!-- Pantalla de Juego -->
+    <div id="gameScreen" class="screen hidden">
+        <h1>JUEGO INICIADO</h1>
+        <p>¡Funciona!</p>
+        <button id="backButton">VOLVER</button>
+    </div>
+    
+    <script>
+        console.log('🎮 Test cargado');
+        
+        const startButton = document.getElementById('startButton');
+        const backButton = document.getElementById('backButton');
+        const startScreen = document.getElementById('startScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        
+        startButton.addEventListener('click', () => {
+            console.log('Iniciando juego...');
+            startScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+        });
+        
+        backButton.addEventListener('click', () => {
+            console.log('Volviendo al inicio...');
+            gameScreen.classList.add('hidden');
+            startScreen.classList.remove('hidden');
+        });
+        
+        console.log('✅ Test inicializado');
+    </script>
+    
+</body>
+</html>
+

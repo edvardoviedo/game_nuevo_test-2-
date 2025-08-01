@@ -1,0 +1,340 @@
+/* Tilt Runner - Estilos Personalizados */
+
+/* Animaciones personalizadas */
+@keyframes glow {
+    from {
+        text-shadow: 0 0 20px currentColor, 0 0 30px currentColor, 0 0 40px currentColor;
+    }
+    to {
+        text-shadow: 0 0 30px currentColor, 0 0 40px currentColor, 0 0 50px currentColor, 0 0 60px currentColor;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes pulse-neon {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes ball-glow {
+    0%, 100% {
+        box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+    }
+    50% {
+        box-shadow: 0 0 30px currentColor, 0 0 40px currentColor, 0 0 50px currentColor;
+    }
+}
+
+/* Efectos específicos para la bolita */
+#ball {
+    animation: ball-glow 1.5s ease-in-out infinite;
+    transition: all 0.1s ease-out;
+}
+
+#ball::before {
+    content: '';
+    position: absolute;
+    top: 20%;
+    left: 30%;
+    width: 40%;
+    height: 40%;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    filter: blur(2px);
+}
+
+/* Efectos para obstáculos */
+.obstacle {
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.obstacle::after {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, transparent, currentColor, transparent);
+    border-radius: inherit;
+    opacity: 0.3;
+    animation: pulse 2s infinite;
+}
+
+/* Efectos para la meta */
+#goal {
+    position: relative;
+    animation: float 2s ease-in-out infinite;
+}
+
+#goal::before {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    background: conic-gradient(from 0deg, transparent, currentColor, transparent);
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: spin 3s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Efectos de pantalla completa */
+body {
+    font-family: 'Courier New', monospace;
+    background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%);
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Efectos de transición para pantallas */
+.screen-transition {
+    transition: all 0.5s ease-in-out;
+}
+
+/* Efectos hover mejorados */
+button:hover {
+    transform: scale(1.05) !important;
+    filter: brightness(1.2);
+}
+
+button:active {
+    transform: scale(0.95) !important;
+}
+
+/* Efectos de resplandor para bordes del juego */
+#gameArea .border-neon-blue {
+    position: relative;
+}
+
+#gameArea .border-neon-blue::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #00BFFF, #8A2BE2, #00BFFF);
+    border-radius: inherit;
+    opacity: 0.3;
+    z-index: -1;
+    animation: pulse 3s infinite;
+}
+
+/* Efectos de partículas de fondo */
+.particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: #00BFFF;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: particle-float 4s linear infinite;
+}
+
+@keyframes particle-float {
+    0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-10vh) scale(1);
+        opacity: 0;
+    }
+}
+
+/* Efectos de grid futurista */
+.futuristic-grid {
+    background-image: 
+        linear-gradient(rgba(0, 191, 255, 0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 191, 255, 0.1) 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: grid-glow 3s ease-in-out infinite alternate;
+}
+
+@keyframes grid-glow {
+    0% {
+        background-image: 
+            linear-gradient(rgba(0, 191, 255, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 191, 255, 0.1) 1px, transparent 1px);
+    }
+    100% {
+        background-image: 
+            linear-gradient(rgba(0, 191, 255, 0.2) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(0, 191, 255, 0.2) 1px, transparent 1px);
+    }
+}
+
+/* Efectos de escaneo */
+.scan-line {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00FFFF, transparent);
+    animation: scan 3s linear infinite;
+    opacity: 0.7;
+}
+
+@keyframes scan {
+    0% {
+        transform: translateY(0);
+    }
+    100% {
+        transform: translateY(100vh);
+    }
+}
+
+/* Efectos de hologram para texto */
+.hologram-text {
+    position: relative;
+    color: #00FFFF;
+    text-shadow: 
+        0 0 5px currentColor,
+        0 0 10px currentColor,
+        0 0 15px currentColor,
+        0 0 20px currentColor;
+}
+
+.hologram-text::before {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: #FF1493;
+    z-index: -1;
+    animation: glitch 2s infinite;
+}
+
+@keyframes glitch {
+    0%, 90%, 100% {
+        transform: translate(0);
+        opacity: 0;
+    }
+    5% {
+        transform: translate(2px, 1px);
+        opacity: 0.7;
+    }
+    10% {
+        transform: translate(-1px, -1px);
+        opacity: 0.8;
+    }
+    15% {
+        transform: translate(1px, 1px);
+        opacity: 0.6;
+    }
+}
+
+/* Efectos de energía para obstáculos */
+.energy-pulse {
+    position: relative;
+    overflow: hidden;
+}
+
+.energy-pulse::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(from 0deg, transparent, currentColor, transparent);
+    animation: energy-rotate 2s linear infinite;
+    opacity: 0.3;
+}
+
+@keyframes energy-rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Efectos de trail para la bolita */
+.ball-trail {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #00FFFF;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: trail-fade 0.5s ease-out forwards;
+}
+
+@keyframes trail-fade {
+    0% {
+        opacity: 0.8;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.3);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    #ball {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .obstacle {
+        transform: scale(0.8);
+    }
+    
+    #goal {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* Efectos de vibración visual */
+.shake {
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+    20%, 40%, 60%, 80% { transform: translateX(2px); }
+}
+
+/* Efectos de desvanecimiento */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+.fade-out {
+    animation: fadeOut 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: scale(1); }
+    to { opacity: 0; transform: scale(0.9); }
+}
+

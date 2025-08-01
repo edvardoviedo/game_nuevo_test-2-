@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tilt Runner - Juego Móvil</title>
+    
+    <style>
+        /* Reset y base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%);
+            color: white;
+            overflow: hidden;
+            min-height: 100vh;
+            user-select: none;
+        }
+        
+        /* Utilidades básicas */
+        .fixed { position: fixed; }
+        .absolute { position: absolute; }
+        .relative { position: relative; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        .flex { display: flex; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .justify-center { justify-content: center; }
+        .justify-between { justify-content: space-between; }
+        .hidden { display: none !important; }
+        .w-full { width: 100%; }
+        .h-full { height: 100%; }
+        .text-center { text-align: center; }
+        .font-bold { font-weight: bold; }
+        .rounded { border-radius: 0.375rem; }
+        .rounded-lg { border-radius: 0.5rem; }
+        .rounded-full { border-radius: 50%; }
+        .border-2 { border-width: 2px; }
+        .p-4 { padding: 1rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .px-8 { padding-left: 2rem; padding-right: 2rem; }
+        .py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .space-x-2 > * + * { margin-left: 0.5rem; }
+        .transform { transform: translateZ(0); }
+        .-translate-x-1\/2 { transform: translateX(-50%); }
+        .-translate-y-1\/2 { transform: translateY(-50%); }
+        .transition-all { transition: all 0.3s ease; }
+        .duration-75 { transition-duration: 75ms; }
+        .duration-300 { transition-duration: 300ms; }
+        .hover\\:scale-105:hover { transform: scale(1.05); }
+        .z-10 { z-index: 10; }
+        .z-50 { z-index: 50; }
+        
+        /* Colores neón */
+        .text-neon-blue { color: #00BFFF; }
+        .text-neon-purple { color: #8A2BE2; }
+        .text-neon-cyan { color: #00FFFF; }
+        .text-neon-pink { color: #FF1493; }
+        .text-deep-black { color: #0A0A0A; }
+        .text-white { color: white; }
+        .bg-neon-blue { background-color: #00BFFF; }
+        .bg-neon-purple { background-color: #8A2BE2; }
+        .bg-neon-cyan { background-color: #00FFFF; }
+        .bg-neon-pink { background-color: #FF1493; }
+        .bg-deep-black { background-color: #0A0A0A; }
+        .bg-gradient-to-br { background-image: linear-gradient(to bottom right, var(--tw-gradient-stops)); }
+        .from-deep-black { --tw-gradient-from: #0A0A0A; --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(10, 10, 10, 0)); }
+        .via-purple-900 { --tw-gradient-stops: var(--tw-gradient-from), #581c87, var(--tw-gradient-to, rgba(88, 28, 135, 0)); }
+        .via-green-900 { --tw-gradient-stops: var(--tw-gradient-from), #14532d, var(--tw-gradient-to, rgba(20, 83, 45, 0)); }
+        .via-red-900 { --tw-gradient-stops: var(--tw-gradient-from), #7f1d1d, var(--tw-gradient-to, rgba(127, 29, 29, 0)); }
+        .to-deep-black { --tw-gradient-to: #0A0A0A; }
+        .border-neon-blue { border-color: #00BFFF; }
+        
+        /* Sombras neón */
+        .shadow-neon-blue { box-shadow: 0 0 20px #00BFFF, 0 0 40px #00BFFF, 0 0 60px #00BFFF; }
+        .shadow-neon-purple { box-shadow: 0 0 20px #8A2BE2, 0 0 40px #8A2BE2, 0 0 60px #8A2BE2; }
+        .shadow-neon-cyan { box-shadow: 0 0 20px #00FFFF, 0 0 40px #00FFFF, 0 0 60px #00FFFF; }
+        .shadow-neon-pink { box-shadow: 0 0 20px #FF1493, 0 0 40px #FF1493, 0 0 60px #FF1493; }
+        
+        /* Tamaños de texto */
+        .text-sm { font-size: 0.875rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-4xl { font-size: 2.25rem; }
+        .text-6xl { font-size: 3.75rem; }
+        .text-8xl { font-size: 6rem; }
+        
+        /* Tamaños de elementos */
+        .w-2 { width: 0.5rem; }
+        .h-2 { height: 0.5rem; }
+        .w-3 { width: 0.75rem; }
+        .h-3 { height: 0.75rem; }
+        .w-6 { width: 1.5rem; }
+        .h-6 { height: 1.5rem; }
+        .w-8 { width: 2rem; }
+        .h-8 { height: 2rem; }
+        .w-10 { width: 2.5rem; }
+        .h-10 { height: 2.5rem; }
+        .w-12 { width: 3rem; }
+        .h-12 { height: 3rem; }
+        .inset-4 { top: 1rem; right: 1rem; bottom: 1rem; left: 1rem; }
+        .top-4 { top: 1rem; }
+        .bottom-4 { bottom: 1rem; }
+        .left-4 { left: 1rem; }
+        .right-4 { right: 1rem; }
+        .opacity-70 { opacity: 0.7; }
+        .opacity-80 { opacity: 0.8; }
+        
+        /* Animaciones */
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 20px currentColor, 0 0 30px currentColor, 0 0 40px currentColor;
+            }
+            to {
+                text-shadow: 0 0 30px currentColor, 0 0 40px currentColor, 0 0 50px currentColor, 0 0 60px currentColor;
+            }
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        @keyframes pulse-neon {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.05); }
+        }
+        
+        @keyframes ball-glow {
+            0%, 100% { box-shadow: 0 0 20px currentColor, 0 0 30px currentColor; }
+            50% { box-shadow: 0 0 30px currentColor, 0 0 40px currentColor, 0 0 50px currentColor; }
+        }
+        
+        .animate-glow { animation: glow 2s ease-in-out infinite alternate; }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+        .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        .animate-pulse-neon { animation: pulse-neon 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+        
+        /* Efectos específicos */
+        #ball {
+            animation: ball-glow 1.5s ease-in-out infinite;
+            transition: all 0.1s ease-out;
+        }
+        
+        #ball::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 30%;
+            width: 40%;
+            height: 40%;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            filter: blur(2px);
+        }
+        
+        .obstacle {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .obstacle::after {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(45deg, transparent, currentColor, transparent);
+            border-radius: inherit;
+            opacity: 0.3;
+            animation: pulse 2s infinite;
+        }
+        
+        #goal {
+            position: relative;
+            animation: float 2s ease-in-out infinite;
+        }
+        
+        #goal::before {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            background: conic-gradient(from 0deg, transparent, currentColor, transparent);
+            border-radius: 50%;
+            opacity: 0.5;
+            animation: spin 3s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        button:hover {
+            transform: scale(1.05) !important;
+            filter: brightness(1.2);
+        }
+        
+        button:active {
+            transform: scale(0.95) !important;
+        }
+        
+        /* Responsive */
+        @media (max-width: 640px) {
+            .text-6xl { font-size: 3rem; }
+            .text-8xl { font-size: 4rem; }
+            #ball { width: 20px; height: 20px; }
+            .obstacle { transform: scale(0.8); }
+            #goal { width: 40px; height: 40px; }
+        }
+        
+        /* Efectos de transición */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        .fade-out {
+            animation: fadeOut 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(0.9); }
+        }
+        
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
+            20%, 40%, 60%, 80% { transform: translateX(2px); }
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Pantalla de Inicio -->
+    <div id="startScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-deep-black via-purple-900 to-deep-black z-50">
+        <div class="text-center">
+            <h1 class="text-6xl font-bold mb-8 text-neon-blue animate-glow">
+                TILT RUNNER
+            </h1>
+            <p class="text-xl mb-8 text-neon-cyan opacity-80">
+                Inclina tu celular para mover la bolita
+            </p>
+            <button id="startButton" class="px-8 py-4 bg-neon-purple text-white font-bold text-xl rounded-lg shadow-neon-purple hover:scale-105 transition-all duration-300">
+                COMENZAR JUEGO
+            </button>
+        </div>
+        
+        <!-- Animación de fondo -->
+        <div class="absolute inset-0 overflow-hidden" style="pointer-events: none;">
+            <div class="absolute w-2 h-2 bg-neon-blue rounded-full animate-float" style="top: 20%; left: 10%;"></div>
+            <div class="absolute w-3 h-3 bg-neon-purple rounded-full animate-float" style="top: 60%; left: 80%; animation-delay: 1s;"></div>
+            <div class="absolute w-2 h-2 bg-neon-cyan rounded-full animate-float" style="top: 80%; left: 20%; animation-delay: 2s;"></div>
+        </div>
+    </div>
+    
+    <!-- Pantalla de Juego -->
+    <div id="gameScreen" class="fixed inset-0 hidden">
+        
+        <!-- HUD Superior -->
+        <div class="absolute top-0 left-0 right-0 z-10 p-4" style="background: linear-gradient(to bottom, #0a0a0a, transparent);">
+            <div class="flex justify-between items-center">
+                <!-- Temporizador -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 bg-neon-cyan rounded-full animate-pulse"></div>
+                    <span id="timer" class="text-2xl font-bold text-neon-cyan">60</span>
+                </div>
+                
+                <!-- Botón de pausa -->
+                <button id="pauseButton" class="px-4 py-2 bg-neon-purple text-white font-bold rounded shadow-neon-purple">
+                    PAUSA
+                </button>
+            </div>
+        </div>
+        
+        <!-- Área de Juego -->
+        <div id="gameArea" class="relative w-full h-full bg-gradient-to-br from-deep-black via-gray-900 to-deep-black overflow-hidden" style="background: linear-gradient(135deg, #0a0a0a 0%, #2d2d2d 50%, #0a0a0a 100%);">
+            
+            <!-- Laberinto/Bordes -->
+            <div class="absolute inset-4 border-2 border-neon-blue rounded-lg shadow-neon-blue">
+                
+                <!-- Bolita del jugador -->
+                <div id="ball" class="absolute w-6 h-6 bg-neon-cyan rounded-full shadow-neon-cyan transform -translate-x-1/2 -translate-y-1/2 transition-all duration-75">
+                    <div class="absolute inset-0 bg-neon-cyan rounded-full animate-pulse opacity-50"></div>
+                </div>
+                
+                <!-- Obstáculos -->
+                <div class="obstacles">
+                    <!-- Obstáculo 1 -->
+                    <div class="obstacle absolute w-8 h-8 bg-neon-pink rounded shadow-neon-pink animate-pulse-neon" style="top: 30%; left: 40%;"></div>
+                    
+                    <!-- Obstáculo 2 -->
+                    <div class="obstacle absolute bg-neon-pink rounded shadow-neon-pink animate-pulse-neon" style="top: 60%; left: 20%; width: 1.5rem; height: 3rem;"></div>
+                    
+                    <!-- Obstáculo 3 -->
+                    <div class="obstacle absolute bg-neon-pink rounded shadow-neon-pink animate-pulse-neon" style="top: 80%; left: 70%; width: 2.5rem; height: 1.5rem;"></div>
+                </div>
+                
+                <!-- Meta -->
+                <div id="goal" class="absolute w-12 h-12 bg-neon-purple rounded-full shadow-neon-purple animate-glow" style="top: 10%; right: 10%;">
+                    <div class="absolute bg-neon-purple rounded-full animate-pulse opacity-60" style="inset: 0.5rem;"></div>
+                    <div class="absolute bg-white rounded-full" style="inset: 1rem;"></div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- Instrucciones móvil -->
+        <div class="absolute bottom-4 left-4 right-4 text-center">
+            <p class="text-sm text-neon-cyan opacity-70">
+                📱 Inclina tu celular para mover la bolita
+            </p>
+        </div>
+    </div>
+    
+    <!-- Pantalla de Victoria -->
+    <div id="victoryScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-deep-black via-green-900 to-deep-black z-50 hidden">
+        <div class="text-center">
+            <h1 class="text-6xl font-bold mb-8 text-neon-cyan animate-glow">
+                ¡VICTORIA!
+            </h1>
+            <p id="victoryTime" class="text-xl mb-8 text-neon-blue opacity-80">
+                Tiempo: 45 segundos
+            </p>
+            <button id="playAgainButton" class="px-8 py-4 bg-neon-cyan text-deep-black font-bold text-xl rounded-lg shadow-neon-cyan hover:scale-105 transition-all duration-300">
+                JUGAR DE NUEVO
+            </button>
+        </div>
+    </div>
+    
+    <!-- Pantalla de Game Over -->
+    <div id="gameOverScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-deep-black via-red-900 to-deep-black z-50 hidden">
+        <div class="text-center">
+            <h1 class="text-6xl font-bold mb-8 text-neon-pink animate-glow">
+                GAME OVER
+            </h1>
+            <p class="text-xl mb-8 text-neon-purple opacity-80">
+                ¡Se acabó el tiempo!
+            </p>
+            <button id="restartButton" class="px-8 py-4 bg-neon-pink text-white font-bold text-xl rounded-lg shadow-neon-pink hover:scale-105 transition-all duration-300">
+                INTENTAR DE NUEVO
+            </button>
+        </div>
+    </div>
+    
+    <!-- Scripts del juego -->
+    <script>
+        console.log('🎮 Cargando Tilt Runner Standalone...');
+    </script>
+    <script src="js/ball.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/controls.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+    
+</body>
+</html>
+

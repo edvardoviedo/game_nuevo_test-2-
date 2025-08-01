@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Tilt Runner - Juego Móvil</title>
+    
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Configuración personalizada de Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'neon-blue': '#00BFFF',
+                        'neon-purple': '#8A2BE2',
+                        'deep-black': '#0A0A0A',
+                        'neon-cyan': '#00FFFF',
+                        'neon-pink': '#FF1493'
+                    },
+                    boxShadow: {
+                        'neon-blue': '0 0 20px #00BFFF, 0 0 40px #00BFFF, 0 0 60px #00BFFF',
+                        'neon-purple': '0 0 20px #8A2BE2, 0 0 40px #8A2BE2, 0 0 60px #8A2BE2',
+                        'neon-cyan': '0 0 20px #00FFFF, 0 0 40px #00FFFF, 0 0 60px #00FFFF',
+                        'neon-pink': '0 0 20px #FF1493, 0 0 40px #FF1493, 0 0 60px #FF1493'
+                    },
+                    animation: {
+                        'pulse-neon': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'float': 'float 3s ease-in-out infinite'
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-deep-black text-white overflow-hidden select-none">
+    
+    <!-- Pantalla de Inicio -->
+    <div id="startScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-deep-black via-purple-900 to-deep-black z-50">
+        <div class="text-center">
+            <h1 class="text-6xl md:text-8xl font-bold mb-8 text-neon-blue animate-glow">
+                TILT RUNNER
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-neon-cyan opacity-80">
+                Inclina tu celular para mover la bolita
+            </p>
+            <button id="startButton" class="px-8 py-4 bg-neon-purple text-white font-bold text-xl rounded-lg shadow-neon-purple hover:shadow-neon-pink transition-all duration-300 transform hover:scale-105">
+                COMENZAR JUEGO
+            </button>
+        </div>
+        
+        <!-- Animación de fondo -->
+        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+            <div class="absolute w-2 h-2 bg-neon-blue rounded-full animate-float" style="top: 20%; left: 10%;"></div>
+            <div class="absolute w-3 h-3 bg-neon-purple rounded-full animate-float" style="top: 60%; left: 80%; animation-delay: 1s;"></div>
+            <div class="absolute w-2 h-2 bg-neon-cyan rounded-full animate-float" style="top: 80%; left: 20%; animation-delay: 2s;"></div>
+        </div>
+    </div>
+    
+    <!-- Pantalla de Juego -->
+    <div id="gameScreen" class="fixed inset-0 hidden">
+        
+        <!-- HUD Superior -->
+        <div class="absolute top-0 left-0 right-0 z-10 p-4 bg-gradient-to-b from-deep-black to-transparent">
+            <div class="flex justify-between items-center">
+                <!-- Temporizador -->
+                <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 bg-neon-cyan rounded-full animate-pulse"></div>
+                    <span id="timer" class="text-2xl font-bold text-neon-cyan">60</span>
+                </div>
+                
+                <!-- Botón de pausa -->
+                <button id="pauseButton" class="px-4 py-2 bg-neon-purple text-white font-bold rounded shadow-neon-purple">
+                    PAUSA
+                </button>
+            </div>
+        </div>
+        
+        <!-- Área de Juego -->
+        <div id="gameArea" class="relative w-full h-full bg-gradient-to-br from-deep-black via-gray-900 to-deep-black overflow-hidden">
+            
+            <!-- Laberinto/Bordes -->
+            <div class="absolute inset-4 border-2 border-neon-blue rounded-lg shadow-neon-blue">
+                
+                <!-- Bolita del jugador -->
+                <div id="ball" class="absolute w-6 h-6 bg-neon-cyan rounded-full shadow-neon-cyan transform -translate-x-1/2 -translate-y-1/2 transition-all duration-75">
+                    <div class="absolute inset-0 bg-neon-cyan rounded-full animate-pulse opacity-50"></div>
+                </div>
+                
+                <!-- Obstáculos -->
+                <div class="obstacles">
+                    <!-- Obstáculo 1 -->
+                    <div class="obstacle absolute w-8 h-8 bg-neon-pink rounded shadow-neon-pink animate-pulse-neon" style="top: 30%; left: 40%;"></div>
+                    
+                    <!-- Obstáculo 2 -->
+                    <div class="obstacle absolute w-6 h-12 bg-neon-pink rounded shadow-neon-pink animate-pulse-neon" style="top: 60%; left: 20%;"></div>
+                    
+                    <!-- Obstáculo 3 -->
+                    <div class="obstacle absolute w-10 h-6 bg-neon-pink rounded shadow-neon-pink animate-pulse-neon" style="top: 80%; left: 70%;"></div>
+                </div>
+                
+                <!-- Meta -->
+                <div id="goal" class="absolute w-12 h-12 bg-neon-purple rounded-full shadow-neon-purple animate-glow" style="top: 10%; right: 10%;">
+                    <div class="absolute inset-2 bg-neon-purple rounded-full animate-pulse opacity-60"></div>
+                    <div class="absolute inset-4 bg-white rounded-full"></div>
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- Instrucciones móvil -->
+        <div class="absolute bottom-4 left-4 right-4 text-center">
+            <p class="text-sm text-neon-cyan opacity-70">
+                📱 Inclina tu celular para mover la bolita
+            </p>
+        </div>
+    </div>
+    
+    <!-- Pantalla de Victoria -->
+    <div id="victoryScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-deep-black via-green-900 to-deep-black z-50 hidden">
+        <div class="text-center">
+            <h1 class="text-6xl md:text-8xl font-bold mb-8 text-neon-cyan animate-glow">
+                ¡VICTORIA!
+            </h1>
+            <p id="victoryTime" class="text-xl md:text-2xl mb-8 text-neon-blue opacity-80">
+                Tiempo: 45 segundos
+            </p>
+            <button id="playAgainButton" class="px-8 py-4 bg-neon-cyan text-deep-black font-bold text-xl rounded-lg shadow-neon-cyan hover:shadow-neon-blue transition-all duration-300 transform hover:scale-105">
+                JUGAR DE NUEVO
+            </button>
+        </div>
+    </div>
+    
+    <!-- Pantalla de Game Over -->
+    <div id="gameOverScreen" class="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-deep-black via-red-900 to-deep-black z-50 hidden">
+        <div class="text-center">
+            <h1 class="text-6xl md:text-8xl font-bold mb-8 text-neon-pink animate-glow">
+                GAME OVER
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 text-neon-purple opacity-80">
+                ¡Se acabó el tiempo!
+            </p>
+            <button id="restartButton" class="px-8 py-4 bg-neon-pink text-white font-bold text-xl rounded-lg shadow-neon-pink hover:shadow-neon-purple transition-all duration-300 transform hover:scale-105">
+                INTENTAR DE NUEVO
+            </button>
+        </div>
+    </div>
+    
+    <!-- Scripts del juego -->
+    <script>
+        // Verificar que todos los scripts se carguen correctamente
+        console.log('🎮 Cargando Tilt Runner...');
+    </script>
+    <script src="js/ball.js"></script>
+    <script src="js/physics.js"></script>
+    <script src="js/controls.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/game.js"></script>
+    
+</body>
+</html>
+
